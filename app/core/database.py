@@ -23,4 +23,3 @@ def get_db():
 if __name__ == "__main__":
     print("Database ok")
     print(f"engine: {settings.database_url}")
-    
