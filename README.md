@@ -40,6 +40,7 @@ The main endpoints are exposed under the `/tasks` prefix:
 ## Running locally
 
 1. Create and activate a virtual environment (optional but recommended).
+
 2. Install dependencies:
 
 pip install -r requirements.txt
