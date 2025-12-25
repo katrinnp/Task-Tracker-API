@@ -10,11 +10,13 @@ from fastapi import APIRouter #Routing
 router = APIRouter() #Used to group and organise task-related endpoints in FastAPI
 
 @router.get("/", response_model=List[TaskRead])
-def get_tasks(completed: Optional[bool] = None, db: Session = Depends(get_db)): #Return all tasks
-    query = db.query(Task)
+def get_tasks(completed: Optional[bool] = None, limit: int = 10, #Max tasks per page
+               skip: int = 0, #Skip first N tasks
+               db: Session = Depends(get_db)): #New database session per request
+    query = db.query(Task) #Start with all tasks
     if completed is not None:
         query = query.filter(Task.completed == completed) #Filter tasks by their completed status
-    tasks = query.all()
+    tasks = query.offset(skip).limit(limit).all() #Skip first N tasks, take next M tasks
     return tasks
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=TaskRead)
