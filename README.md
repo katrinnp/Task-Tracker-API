@@ -55,3 +55,13 @@ uvicorn app.main:app --reload
 
 - Swagger UI: http://localhost:8000/docs  
 - Root health check: http://localhost:8000/
+
+## Future work
+
+Planned improvements for this project:
+
+- Add user accounts and authentication (JWT-based login/register).
+- Restrict tasks so that each user can only access their own tasks.
+- Improve pagination with total count and page metadata in the response.
+- Add a simple frontend (React or plain HTML/JS) for managing tasks in the browser.
+- Write more automated tests (unit and integration) for the API.
