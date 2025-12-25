@@ -1,6 +1,6 @@
 # Task Tracker API
 
-Task Tracker API is a small REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, and basic pagination.
+Task Tracker API is a REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, and basic pagination.
 
 ## Technologies
 
