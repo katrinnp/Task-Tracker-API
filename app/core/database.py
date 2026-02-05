@@ -5,10 +5,10 @@ from sqlalchemy.orm import sessionmaker #sessions
 from app.core.config import settings #Get DATABASE_URL from config.py
 
 #Create connection
-engine = create_engine(settings.database_url, connect_args={"check_same_thread": False})
+engine = create_engine(settings.database_url, connect_args = {"check_same_thread": False})
 
 #Each request gets fresh session. All sessions use tasks.db
-Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = sessionmaker(autocommit = False, autoflush = False, bind = engine)
 
 #Base class(parent class)
 Base = declarative_base()
