@@ -1,0 +1,17 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship #Used to define ORM relationships between models
+from app.core.database import Base #For model to become a database table
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, 
+                primary_key = True, #Unique identifier
+                index = True) #DB index for faster lookups
+    username = Column(String, 
+                      unique = True, #No duplicates allowed
+                      index = True,
+                      nullable = False) #Required field
+    tasks = relationship("Task", #Related model
+                         back_populates = "owner") #Connects this relationship to the "owner", creating a two-way link
+    
+    
