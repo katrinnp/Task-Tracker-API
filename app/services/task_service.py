@@ -1,11 +1,12 @@
-from fastapi import Depends
 from fastapi import Depends, status, HTTPException #FastAPI dependency, status code, errors
 from sqlalchemy.orm import Session #Database session type
 from typing import Optional, List #For optional types and lists
 
-from app.core.database import get_db
 from app.models.task import Task #Task model
 from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate #Pydantic schemas
+from app.core.database import get_db #Database session dependency (new database session per request)
+from fastapi import APIRouter #Routing
+
 
 def get_tasks(completed: Optional[bool] = None, 
               limit: int = 10, #Max tasks per page
@@ -48,3 +49,12 @@ def update_task(task_id: int,
     db.commit()
     db.refresh(task)
     return task
+
+def delete_task(task_id: int, 
+                db: Session = Depends(get_db)): #Deletes a task by its id
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task is None:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Task not found")
+    db.delete(task) #Mark task for deletion
+    db.commit() #Execute deletion
+    return None #Response 204 must not contain a body

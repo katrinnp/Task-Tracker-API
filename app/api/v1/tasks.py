@@ -38,9 +38,4 @@ def update_task(task_id: int,
 @router.delete("/{task_id}", status_code = status.HTTP_204_NO_CONTENT) #Returns 204 NO CONTENT
 def delete_task(task_id: int, 
                 db: Session = Depends(get_db)): #Deletes a task by its id
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if task is None:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Task not found")
-    db.delete(task) #Mark task for deletion
-    db.commit() #Execute deletion
-    return None #Response 204 must not contain a body
+    task_service.delete_task(db, task_id)
