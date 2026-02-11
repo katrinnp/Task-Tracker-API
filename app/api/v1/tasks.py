@@ -16,20 +16,13 @@ def get_tasks(completed: Optional[bool] = None,
               limit: int = 10, #Max tasks per page
                skip: int = 0, #Skip first N tasks
                db: Session = Depends(get_db)): #New database session per request
-    query = db.query(Task) #Start with all tasks
-    if completed is not None:
-        query = query.filter(Task.completed == completed) #Filter tasks by their completed status
-    tasks = query.offset(skip).limit(limit).all() #Skip first N tasks, take next M tasks
-    return tasks
+    return task_service.get_tasks(db, completed, limit, skip)
+
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model = TaskRead)
 def create_task(task: TaskCreate, 
                 db: Session = Depends(get_db)): #Uses TaskCreate schema to create a new task
-    db_task = Task(title=task.title, description = task.description, completed = False)
-    db.add(db_task)
-    db.commit() #Save changes
-    db.refresh(db_task) #Reload instance with generated fields
-    return db_task #Returns the created task with status code 201
+    return task_service.create_task(db, task)
 
 @router.get("/{task_id}", response_model=TaskRead)
 def get_task(task_id: int, 
