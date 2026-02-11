@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session  # Database session type
 from typing import Optional  # For optional types
 
 from app.models.task import Task  # Task model
-from app.schemas.schemas import TaskCreate, TaskUpdate  # Pydantic schemas
+from app.schemas.schemas import TaskCreate, TaskReplace, TaskUpdate  # Pydantic schemas
 
 
 def get_tasks(db: Session,  # Database session passed from router
@@ -49,16 +49,31 @@ def get_task_by_id(db: Session,  # Database session passed from router
 
 def update_task(db: Session,  # Database session passed from router
                 task_id: int,
-                task_update: TaskUpdate): # Updates an existing task
+                task_update: TaskReplace): # Updates an existing task
     task = get_task_by_id(db, task_id)  # Reuse existing function
+
+    # Replace whole
+    task.title = task_update.title
+    task.description = task_update.description
+    task.completed = task_update.completed
+
+    db.commit()
+    db.refresh(task)
+
+    return task
+
+def patch_task(db: Session, # Database session passed from router
+               task_id: int,
+               task_update: TaskUpdate): # Updates an existing task
+    task = get_task_by_id(db, task_id) # Reuse existing function
 
     # Partial update
     if task_update.title is not None:
         task.title = task_update.title
-
+    
     if task_update.description is not None:
         task.description = task_update.description
-
+    
     if task_update.completed is not None:
         task.completed = task_update.completed
 
@@ -66,7 +81,6 @@ def update_task(db: Session,  # Database session passed from router
     db.refresh(task)
 
     return task
-
 
 def delete_task(db: Session,  # Database session passed from router
                 task_id: int):  # Deletes a task by its id
