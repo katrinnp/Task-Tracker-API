@@ -10,7 +10,7 @@ class TaskRead(BaseModel): #Reading a task
     completed: bool
     created_at: datetime #Creation timestamp
     updated_at: Optional[datetime] = None #Last update timestamp
-
+    user_id: int #id for user who owns this task
     class Config:
         from_attributes = True #Allows Pydantic to read from SQLAlchemy ORM objects
 
@@ -18,6 +18,7 @@ class TaskRead(BaseModel): #Reading a task
 class TaskCreate(BaseModel): #Creating a new task
     title: str
     description: Optional[str] = None #Optional description
+    user_id: int # required to link task to a user
 
 class TaskReplace(BaseModel): #Replacing an existing task
     title: str
