@@ -15,7 +15,6 @@ router = APIRouter() #Used to group and organise task-related endpoints in FastA
 
 @router.get("/", response_model = List[TaskRead])
 def get_tasks(completed: Optional[bool] = None, limit: int = 10, #Max tasks per page
->>>>>>> eb14db8 (Update task endpoints and schemas)
                skip: int = 0, #Skip first N tasks
                user_id: Optional[int] = None,
                db: Session = Depends(get_db)): #New database session per request
