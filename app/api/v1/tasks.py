@@ -1,8 +1,7 @@
-from fastapi import Depends, status, HTTPException #FastAPI dependency, status code, errors
+from fastapi import Depends, status #FastAPI dependency, status code, errors
 from sqlalchemy.orm import Session #Database session type
 from typing import Optional, List #For optional types and lists
 
-from app.models.task import Task #Task model
 from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate #Pydantic schemas
 from app.core.database import get_db #Database session dependency (new database session per request)
 from fastapi import APIRouter #Routing
