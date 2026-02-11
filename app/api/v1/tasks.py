@@ -2,10 +2,7 @@ from fastapi import Depends, status #FastAPI dependency, status code, errors
 from sqlalchemy.orm import Session #Database session type
 from typing import Optional, List #For optional types and lists
 
-from app.schemas.schemas import TaskRead, TaskCreate, TaskReplace, TaskUpdate #Pydantic schemas
-from app.models.user import User
-from app.models.task import Task #Task model
-from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate #Pydantic schemas
+from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate, TaskReplace #Pydantic schemas
 from app.core.database import get_db #Database session dependency (new database session per request)
 from fastapi import APIRouter #Routing
 
@@ -18,7 +15,7 @@ def get_tasks(completed: Optional[bool] = None, limit: int = 10, #Max tasks per 
                skip: int = 0, #Skip first N tasks
                user_id: Optional[int] = None,
                db: Session = Depends(get_db)): #New database session per request
-    return task_service.get_tasks(db, completed, limit, skip)
+    return task_service.get_tasks(db, completed, limit, skip, user_id)
 
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model = TaskRead)
