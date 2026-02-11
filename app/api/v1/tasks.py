@@ -27,10 +27,7 @@ def create_task(task: TaskCreate,
 @router.get("/{task_id}", response_model=TaskRead)
 def get_task(task_id: int, 
              db: Session = Depends(get_db)): #Retrieve a task by its id
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if task is None:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Task not found") #Raises 404 if the task does not exist
-    return task
+    return task_service.get_task_by_id(db, task_id)
 
 @router.put("/{task_id}", response_model=TaskRead)
 def update_task(task_id: int, 

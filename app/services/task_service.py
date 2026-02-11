@@ -1,4 +1,5 @@
 from fastapi import Depends
+from fastapi import Depends, status, HTTPException #FastAPI dependency, status code, errors
 from sqlalchemy.orm import Session #Database session type
 from typing import Optional, List #For optional types and lists
 
@@ -23,3 +24,10 @@ def create_task(task: TaskCreate,
     db.commit() #Save changes
     db.refresh(db_task) #Reload instance with generated fields
     return db_task #Returns the created task with status code 201
+
+def get_task(task_id: int, 
+             db: Session = Depends(get_db)): #Retrieve a task by its id
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task is None:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Task not found") #Raises 404 if the task does not exist
+    return task
