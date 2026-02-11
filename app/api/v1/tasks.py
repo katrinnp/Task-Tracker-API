@@ -33,19 +33,7 @@ def get_task(task_id: int,
 def update_task(task_id: int, 
                 task_update: TaskUpdate, 
                 db: Session = Depends(get_db)): #Updates an existing task
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if task is None:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Task not found")
-    #Partial update
-    if task_update.title is not None:
-        task.title = task_update.title
-    if task_update.description is not None:
-        task.description = task_update.description
-    if task_update.completed is not None:
-        task.completed = task_update.completed
-    db.commit()
-    db.refresh(task)
-    return task
+    return task_service.update_task(db, task_id, task_update)
 
 @router.delete("/{task_id}", status_code = status.HTTP_204_NO_CONTENT) #Returns 204 NO CONTENT
 def delete_task(task_id: int, 
