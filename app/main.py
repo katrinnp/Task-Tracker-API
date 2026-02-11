@@ -1,4 +1,5 @@
 from fastapi import FastAPI #FastAPI web framework
+from app.api.v1 import tasks
 
 app = FastAPI(title="Task Tracker API") #Create FastAPI instance
 
@@ -8,7 +9,7 @@ from app.api.v1.tasks import router as tasks_router #Router wih all task endpoin
 
 Task.metadata.create_all(bind = engine) #Create database tables
 
-app.include_router(tasks_router, prefix = "/tasks", tags = ["tasks"]) #Include tasks router under /tasks path
+app.include_router(tasks_router, prefix = "/tasks", tags = ["Tasks"]) #Include tasks router under /tasks path
 
 @app.get("/") 
 def read_root(): #Verification that the API is running
