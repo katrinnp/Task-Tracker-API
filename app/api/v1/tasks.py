@@ -7,6 +7,8 @@ from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate #Pydantic schem
 from app.core.database import get_db #Database session dependency (new database session per request)
 from fastapi import APIRouter #Routing
 
+from app.services import task_service
+
 router = APIRouter() #Used to group and organise task-related endpoints in FastAPI
 
 @router.get("/", response_model = List[TaskRead])
