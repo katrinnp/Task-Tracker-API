@@ -19,7 +19,12 @@ class TaskCreate(BaseModel): #Creating a new task
     title: str
     description: Optional[str] = None #Optional description
 
-class TaskUpdate(BaseModel): #Updating an existing task
+class TaskReplace(BaseModel): #Replacing an existing task
+    title: str
+    description: Optional[str] = None
+    completed: bool
+
+class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     completed: Optional[bool] = None

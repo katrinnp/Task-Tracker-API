@@ -2,7 +2,7 @@ from fastapi import Depends, status #FastAPI dependency, status code, errors
 from sqlalchemy.orm import Session #Database session type
 from typing import Optional, List #For optional types and lists
 
-from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate #Pydantic schemas
+from app.schemas.schemas import TaskRead, TaskCreate, TaskReplace, TaskUpdate #Pydantic schemas
 from app.core.database import get_db #Database session dependency (new database session per request)
 from fastapi import APIRouter #Routing
 
@@ -30,9 +30,15 @@ def get_task(task_id: int,
 
 @router.put("/{task_id}", response_model=TaskRead)
 def update_task(task_id: int, 
-                task_update: TaskUpdate, 
+                task_update: TaskReplace, 
                 db: Session = Depends(get_db)): #Updates an existing task
     return task_service.update_task(db, task_id, task_update)
+
+@router.patch("/{task_id}", response_model = TaskRead)
+def patch_task(task_id: int,
+               task_update: TaskUpdate,
+               db: Session = Depends(get_db)):
+    return task_service.patch_task(db, task_id, task_update)
 
 @router.delete("/{task_id}", status_code = status.HTTP_204_NO_CONTENT) #Returns 204 NO CONTENT
 def delete_task(task_id: int, 
