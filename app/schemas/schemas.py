@@ -29,3 +29,14 @@ class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     completed: Optional[bool] = None
+
+class UserCreate(BaseModel):
+    username: str #Username of the new user
+
+class UserRead(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        from_attributes = True #Allows reading from SQLAlchemy models
+
