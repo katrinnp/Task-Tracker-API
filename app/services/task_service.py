@@ -24,7 +24,8 @@ def create_task(db: Session,  # Database session passed from router
     db_task = Task(
         title=task.title,
         description=task.description,
-        completed=False
+        completed=False, 
+        user_id = task.user_id
     )
 
     db.add(db_task)
