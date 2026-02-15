@@ -15,10 +15,10 @@ class User(Base):
     email = Column(String,
                    unique = True,
                    index = True,
-                   nullable = False)
+                   nullable = True)
     # Hashed password, this stores the encrypted version of the password
     hashed_password = Column(String,
-                      nullable = False)
+                      nullable = True)
     tasks = relationship("Task", #Related model
                          back_populates = "owner") #Connects this relationship to the "owner", creating a two-way link
     
