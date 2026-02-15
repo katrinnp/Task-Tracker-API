@@ -11,7 +11,9 @@ router = APIRouter() # Used to group and organise user-related endpoints in Fast
 @router.post("/", response_model = UserRead, status_code = status.HTTP_201_CREATED)
 def create_user(user: UserCreate,
                 db: Session = Depends(get_db)): # Creates new db session per request, closes automatically in the end
-    db_user = User(username = user.username) # Creates a new user instance
+    db_user = User(username = user.username,
+                   email = user.email,
+                   hashed_password = user.password) # Creates a new user instance
 
     db.add(db_user) # Adds the user to db session
     db.commit() # Save changes
