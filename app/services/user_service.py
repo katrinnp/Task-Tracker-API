@@ -1,6 +1,7 @@
 from fastapi import HTTPException # Tools for routing and dependency
 from sqlalchemy.orm import Session # Session for db
 
+from app.core.security import hash_password # Import password hashing
 from app.models.user import User # User table in db
 from app.schemas.schemas import UserCreate, UserUpdate # Pydantic schemas for validation
 
@@ -8,7 +9,7 @@ def create_user(user: UserCreate,
                 db: Session): # Creates new db session per request, closes automatically in the end
     db_user = User(username = user.username,
                    email = user.email,
-                   hashed_password = user.password) # Creates a new user instance
+                   hashed_password = hash_password(user.password)) # Creates a new user instance
 
     db.add(db_user) # Adds the user to db session
     db.commit() # Save changes
@@ -42,7 +43,7 @@ def update_user(db: Session,
         user.email = user_update.email
 
     if user_update.password is not None:
-        user.hashed_password = user_update.password
+        user.hashed_password = hash_password(user_update.password) # Hash new password
 
     db.commit()
     db.refresh(user)
