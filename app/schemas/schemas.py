@@ -43,3 +43,7 @@ class UserRead(BaseModel):
     class Config:
         from_attributes = True # Allows reading from SQLAlchemy models
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
