@@ -1,6 +1,6 @@
 # Task Tracker API
 
-Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, and user-task relationships.
+Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, user-task relationships and JWT-based authentication.
 
 ## Technologies
 
@@ -9,15 +9,18 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - Pydantic
 - SQLite
 - Uvicorn
+- Python-JOSE (JWT)
+- Passlib (bcrypt password hashing)
 
 ## Project structure (backend `app` folder)
 
 - `app/main.py` – Initializes the FastAPI application, creates database tables, and includes the routers.
 - `app/models/` – SQLAlchemy models (`task.py`, `user.py`).
 - `app/schemas/` – Pydantic schemas for request/response validation.
-- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks and users).
+- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks, users, authentication).
 - `app/services/` – Business logic layer (e.g. `task_service.py`).
 - `app/core/database.py` – Database configuration and the `get_db` dependency used by FastAPI.
+- `app/core/dependencies.py` – Authentication dependencies (e.g. `get_current_user`).
 
 ---
 
@@ -27,6 +30,7 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 
 - `id` – Integer, primary key
 - `username` – String, unique
+- `hashed_password` – String
 
 ### Task
 
@@ -37,6 +41,62 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - `user_id` – Foreign key → `users.id`
 
 Each task belongs to a specific user.
+
+---
+
+# 🔐 Authentication
+
+The API uses **JWT (JSON Web Token)** authentication.
+
+Passwords are securely hashed using **Passlib (bcrypt)**.
+
+---
+
+## Authentication Endpoints
+
+The following endpoints are available under `/api/v1/auth`:
+
+| Method | Path | Description |
+|--------|------|------------|
+| POST | `/api/v1/auth/register` | Register a new user |
+| POST | `/api/v1/auth/login` | Login and receive access token |
+
+---
+
+## Register
+
+Creates a new user.
+
+Example request body:
+
+```json
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
+
+## Login
+
+Returns a JWT access token.
+
+Example response:
+
+```json
+{
+  "access_token": "your_jwt_token_here",
+  "token_type": "bearer"
+}
+```
+
+## Using the Access Token
+
+1. Login to receive an access token.
+2. Open Swagger UI at: http://localhost:8000/docs
+3. Click the **Authorize** button.
+4. Enter: Bearer <your_access_token>
+5. Access protected endpoints.
+
 
 ---
 
@@ -102,9 +162,6 @@ uvicorn app.main:app --reload
 
 Planned improvements for this project:
 
-- Add user authentication (JWT-based login/register).
 - Restrict tasks so that each user can only access their own tasks.
-- Implement login and password management.
-- Improve pagination with total count and page metadata in the response.
 - Add a simple frontend (React or plain HTML/JS) for managing tasks in the browser.
 - Write more automated tests (unit and integration) for the API.
