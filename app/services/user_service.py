@@ -5,8 +5,8 @@ from app.core.security import hash_password # Import password hashing
 from app.models.user import User # User table in db
 from app.schemas.schemas import UserCreate, UserUpdate # Pydantic schemas for validation
 
-def create_user(user: UserCreate,
-                db: Session): # Creates new db session per request, closes automatically in the end
+def create_user(db: Session,
+                user: UserCreate): # Creates new db session per request, closes automatically in the end
     db_user = User(username = user.username,
                    email = user.email,
                    hashed_password = hash_password(user.password)) # Creates a new user instance
