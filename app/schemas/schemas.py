@@ -19,7 +19,6 @@ class TaskRead(BaseModel): #Reading a task
 class TaskCreate(BaseModel): #Creating a new task
     title: str
     description: Optional[str] = None #Optional description
-    user_id: int # required to link task to a user
 
 class TaskReplace(BaseModel): #Replacing an existing task
     title: str
