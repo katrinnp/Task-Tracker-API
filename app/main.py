@@ -1,5 +1,5 @@
 from fastapi import FastAPI #FastAPI web framework
-from app.api.v1 import tasks
+from app.api.v1 import tasks, auth
 
 app = FastAPI(title="Task Tracker API") #Create FastAPI instance
 
@@ -14,6 +14,7 @@ Base.metadata.create_all(bind = engine)
 
 app.include_router(tasks_router, prefix = "/tasks", tags = ["Tasks"]) #Include tasks router under /tasks path
 app.include_router(users_router, prefix = "/users", tags = ["Users"]) #Include users router under /users path
+app.include_router(auth.router, prefix = "/auth", tags = ["Authentication"]) # Include authentication router
 
 @app.get("/") 
 def read_root(): #Verification that the API is running
