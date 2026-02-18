@@ -44,7 +44,7 @@ Each task belongs to a specific user.
 
 ---
 
-# 🔐 Authentication
+# Authentication
 
 The API uses **JWT (JSON Web Token)** authentication.
 
@@ -84,7 +84,7 @@ Example response:
 
 ```json
 {
-  "access_token": "your_jwt_token_here",
+  "access_token": "jwt_token_here",
   "token_type": "bearer"
 }
 ```
@@ -94,7 +94,7 @@ Example response:
 1. Login to receive an access token.
 2. Open Swagger UI at: http://localhost:8000/docs
 3. Click the **Authorize** button.
-4. Enter: Bearer <your_access_token>
+4. Enter: Bearer <access_token>
 5. Access protected endpoints.
 
 
