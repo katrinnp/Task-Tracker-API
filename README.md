@@ -1,6 +1,6 @@
 # Task Tracker API
 
-Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, user-task relationships and JWT-based authentication.
+Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, user-task relationships, and JWT-based authentication.
 
 ## Technologies
 
@@ -18,7 +18,7 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - `app/main.py` – Initializes the FastAPI application, creates database tables, and includes the routers.
 - `app/models/` – SQLAlchemy models (`task.py`, `user.py`).
 - `app/schemas/` – Pydantic schemas for request/response validation.
-- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks, users, authentication).
+- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks, users and authentication).
 - `app/services/` – Business logic layer (e.g. `task_service.py`).
 - `app/core/database.py` – Database configuration and the `get_db` dependency used by FastAPI.
 - `app/core/dependencies.py` – Authentication dependencies (e.g. `get_current_user`).
@@ -88,7 +88,6 @@ json
   "token_type": "bearer"
 }
 
-
 ## Using the Access Token
 
 1. Login to receive an access token.
@@ -96,6 +95,25 @@ json
 3. Click the **Authorize** button.
 4. Enter: Bearer <access_token>
 5. Access protected endpoints.
+
+---
+
+## Database Models
+
+### User
+
+- `id` – Integer, primary key
+- `username` – String, unique
+
+### Task
+
+- `id` – Integer, primary key
+- `title` – String
+- `description` – String
+- `completed` – Boolean
+- `user_id` – Foreign key → `users.id`
+
+Each task belongs to a specific user.
 
 ---
 
