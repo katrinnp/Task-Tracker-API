@@ -9,6 +9,8 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - Pydantic
 - SQLite
 - Uvicorn
+- Python-JOSE (JWT)
+- Passlib (bcrypt password hashing)
 
 ## Project structure (backend `app` folder)
 
@@ -18,6 +20,85 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - `app/api/v1/` – HTTP endpoints (CRUD operations for tasks and users).
 - `app/services/` – Business logic layer (e.g. `task_service.py`).
 - `app/core/database.py` – Database configuration and the `get_db` dependency used by FastAPI.
+- `app/core/dependencies.py` – Authentication dependencies (e.g. `get_current_user`).
+
+---
+
+## Database Models
+
+### User
+
+- `id` – Integer, primary key
+- `username` – String, unique
+- `hashed_password` – String
+
+### Task
+
+- `id` – Integer, primary key
+- `title` – String
+- `description` – String
+- `completed` – Boolean
+- `user_id` – Foreign key → `users.id`
+
+Each task belongs to a specific user.
+
+---
+
+# Authentication
+
+The API uses **JWT (JSON Web Token)** authentication.
+
+Passwords are securely hashed using **Passlib (bcrypt)**.
+
+---
+
+## Authentication Endpoints
+
+The following endpoints are available under `/api/v1/auth`:
+
+| Method | Path | Description |
+|--------|------|------------|
+| POST | `/api/v1/auth/register` | Register a new user |
+| POST | `/api/v1/auth/login` | Login and receive access token |
+
+---
+
+## Register
+
+Creates a new user.
+
+Example request body:
+
+```json
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
+
+## Login
+
+Returns a JWT access token.
+
+Example response:
+
+```json
+{
+  "access_token": "jwt_token_here",
+  "token_type": "bearer"
+}
+```
+
+## Using the Access Token
+
+1. Login to receive an access token.
+2. Open Swagger UI at: http://localhost:8000/docs
+3. Click the **Authorize** button.
+4. Enter: Bearer <access_token>
+5. Access protected endpoints.
+
+
+---
 
 ---
 

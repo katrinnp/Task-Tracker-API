@@ -7,10 +7,11 @@ from app.schemas.schemas import TaskCreate, TaskReplace, TaskUpdate  # Pydantic 
 
 
 def get_tasks(db: Session,  # Database session passed from router
+            user_id: int,
             completed: Optional[bool] = None,
             limit: int = 10,  # Max tasks per page
             skip: int = 0):  # Skip first N tasks
-    query = db.query(Task)  # Start with all tasks
+    query = db.query(Task).filter(Task.user_id == user_id)  # Start with all tasks
 
     if completed is not None:
         query = query.filter(Task.completed == completed)  # Filter tasks by their completed status
@@ -20,7 +21,8 @@ def get_tasks(db: Session,  # Database session passed from router
 
 
 def create_task(db: Session,  # Database session passed from router
-                task: TaskCreate): # Uses TaskCreate schema to create a new task
+                task: TaskCreate, # Uses TaskCreate schema to create a new task
+                user_id: int):
     db_task = Task(
         title=task.title,
         description=task.description,
@@ -36,8 +38,9 @@ def create_task(db: Session,  # Database session passed from router
 
 
 def get_task_by_id(db: Session,  # Database session passed from router
-                    task_id: int):  # Retrieve a task by its id
-    task = db.query(Task).filter(Task.id == task_id).first()
+                    task_id: int,
+                    user_id: int):  # Retrieve a task by its id
+    task = db.query(Task).filter(Task.id == task_id, Task.user_id == user_id).first()
 
     if task is None:
         raise HTTPException(
@@ -50,8 +53,9 @@ def get_task_by_id(db: Session,  # Database session passed from router
 
 def update_task(db: Session,  # Database session passed from router
                 task_id: int,
-                task_update: TaskReplace): # Updates an existing task
-    task = get_task_by_id(db, task_id)  # Reuse existing function
+                task_update: TaskReplace,
+                user_id: int): # Updates an existing task
+    task = get_task_by_id(db, task_id, user_id)  # Reuse existing function
 
     # Replace whole
     task.title = task_update.title
@@ -65,8 +69,9 @@ def update_task(db: Session,  # Database session passed from router
 
 def patch_task(db: Session, # Database session passed from router
                task_id: int,
-               task_update: TaskUpdate): # Updates an existing task
-    task = get_task_by_id(db, task_id) # Reuse existing function
+               task_update: TaskUpdate,
+               user_id: int): # Updates an existing task
+    task = get_task_by_id(db, task_id, user_id) # Reuse existing function
 
     # Partial update
     if task_update.title is not None:
@@ -84,8 +89,9 @@ def patch_task(db: Session, # Database session passed from router
     return task
 
 def delete_task(db: Session,  # Database session passed from router
-                task_id: int):  # Deletes a task by its id
-    task = get_task_by_id(db, task_id)  # Reuse existing function
+                task_id: int,
+                user_id: int):  # Deletes a task by its id
+    task = get_task_by_id(db, task_id, user_id)  # Reuse existing function
 
     db.delete(task)  # Mark task for deletion
     db.commit()  # Execute deletion

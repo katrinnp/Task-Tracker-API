@@ -1,6 +1,7 @@
 from pydantic import BaseModel #Base class for data validation
 from typing import Optional #For optional types in Python 3.9
 from datetime import datetime #For timestamp fields
+from pydantic import EmailStr # Provides automatic email format validation
 
 #Defines how a task is returned to the client
 class TaskRead(BaseModel): #Reading a task
@@ -18,7 +19,6 @@ class TaskRead(BaseModel): #Reading a task
 class TaskCreate(BaseModel): #Creating a new task
     title: str
     description: Optional[str] = None #Optional description
-    user_id: int # required to link task to a user
 
 class TaskReplace(BaseModel): #Replacing an existing task
     title: str
@@ -31,12 +31,22 @@ class TaskUpdate(BaseModel):
     completed: Optional[bool] = None
 
 class UserCreate(BaseModel):
-    username: str #Username of the new user
+    username: str # Username of the new user
+    email: EmailStr # Used for authentication
+    password: str # Pass received from user
 
 class UserRead(BaseModel):
     id: int
     username: str
 
     class Config:
-        from_attributes = True #Allows reading from SQLAlchemy models
+        from_attributes = True # Allows reading from SQLAlchemy models
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

@@ -11,6 +11,14 @@ class User(Base):
                       unique = True, #No duplicates allowed
                       index = True,
                       nullable = False) #Required field
+    # This will be used for login
+    email = Column(String,
+                   unique = True,
+                   index = True,
+                   nullable = True)
+    # Hashed password, this stores the encrypted version of the password
+    hashed_password = Column(String,
+                      nullable = True)
     tasks = relationship("Task", #Related model
                          back_populates = "owner") #Connects this relationship to the "owner", creating a two-way link
     

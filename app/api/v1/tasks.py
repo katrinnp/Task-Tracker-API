@@ -4,6 +4,8 @@ from typing import Optional, List #For optional types and lists
 
 from app.schemas.schemas import TaskRead, TaskCreate, TaskUpdate, TaskReplace #Pydantic schemas
 from app.core.database import get_db #Database session dependency (new database session per request)
+from app.core.dependencies import get_current_user
+from app.models.user import User
 from fastapi import APIRouter #Routing
 
 from app.services import task_service
@@ -11,36 +13,42 @@ from app.services import task_service
 router = APIRouter() #Used to group and organise task-related endpoints in FastAPI
 
 @router.get("/", response_model = List[TaskRead])
-def get_tasks(completed: Optional[bool] = None, limit: int = 10, #Max tasks per page
+def get_tasks(completed: Optional[bool] = None, 
+              limit: int = 10, #Max tasks per page
                skip: int = 0, #Skip first N tasks
-               user_id: Optional[int] = None,
-               db: Session = Depends(get_db)): #New database session per request
-    return task_service.get_tasks(db, completed, limit, skip, user_id)
+               db: Session = Depends(get_db), #New database session per request
+               current_user: User = Depends(get_current_user)): 
+    return task_service.get_tasks(db = db, completed = completed, limit = limit, skip = skip, user_id = current_user.id)
 
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model = TaskRead)
 def create_task(task: TaskCreate, 
-                db: Session = Depends(get_db)): #Uses TaskCreate schema to create a new task
-    return task_service.create_task(db, task)
+                db: Session = Depends(get_db),
+                current_user: User = Depends(get_current_user)): #Uses TaskCreate schema to create a new task
+    return task_service.create_task(db = db, task = task, user_id = current_user.id)
 
 @router.get("/{task_id}", response_model=TaskRead)
 def get_task(task_id: int, 
-             db: Session = Depends(get_db)): #Retrieve a task by its id
-    return task_service.get_task_by_id(db, task_id)
+             db: Session = Depends(get_db),
+             current_user: User = Depends(get_current_user)): #Retrieve a task by its id
+    return task_service.get_task_by_id(db = db, task_id = task_id, user_id = current_user.id)
 
 @router.put("/{task_id}", response_model=TaskRead)
 def update_task(task_id: int, 
                 task_update: TaskReplace, 
-                db: Session = Depends(get_db)): #Updates an existing task
-    return task_service.update_task(db, task_id, task_update)
+                db: Session = Depends(get_db),
+                current_user: User = Depends(get_current_user)): #Updates an existing task
+    return task_service.update_task(db = db, task_id = task_id, task_update = task_update, user_id = current_user.id)
 
 @router.patch("/{task_id}", response_model = TaskRead)
 def patch_task(task_id: int,
                task_update: TaskUpdate,
-               db: Session = Depends(get_db)):
-    return task_service.patch_task(db, task_id, task_update)
+               db: Session = Depends(get_db),
+               current_user: User = Depends(get_current_user)):
+    return task_service.patch_task(db = db, task_id = task_id, task_update = task_update, user_id = current_user.id)
 
 @router.delete("/{task_id}", status_code = status.HTTP_204_NO_CONTENT) #Returns 204 NO CONTENT
 def delete_task(task_id: int, 
-                db: Session = Depends(get_db)): #Deletes a task by its id
-    task_service.delete_task(db, task_id)
+                db: Session = Depends(get_db),
+                current_user: User = Depends(get_current_user)): #Deletes a task by its id
+    task_service.delete_task(db = db, task_id = task_id, user_id = current_user.id)
