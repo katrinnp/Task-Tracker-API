@@ -1,6 +1,6 @@
 # Task Tracker API
 
-Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, user-task relationships and JWT-based authentication.
+Task Tracker API is a REST API for managing tasks and users, built with **FastAPI**, **SQLAlchemy**, and **SQLite**. It supports full CRUD operations on tasks, filtering by completion status, basic pagination, and user-task relationships.
 
 ## Technologies
 
@@ -17,7 +17,7 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - `app/main.py` – Initializes the FastAPI application, creates database tables, and includes the routers.
 - `app/models/` – SQLAlchemy models (`task.py`, `user.py`).
 - `app/schemas/` – Pydantic schemas for request/response validation.
-- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks, users, authentication).
+- `app/api/v1/` – HTTP endpoints (CRUD operations for tasks and users).
 - `app/services/` – Business logic layer (e.g. `task_service.py`).
 - `app/core/database.py` – Database configuration and the `get_db` dependency used by FastAPI.
 - `app/core/dependencies.py` – Authentication dependencies (e.g. `get_current_user`).
@@ -100,6 +100,27 @@ Example response:
 
 ---
 
+---
+
+## Database Models
+
+### User
+
+- `id` – Integer, primary key
+- `username` – String, unique
+
+### Task
+
+- `id` – Integer, primary key
+- `title` – String
+- `description` – String
+- `completed` – Boolean
+- `user_id` – Foreign key → `users.id`
+
+Each task belongs to a specific user.
+
+---
+
 ## HTTP API
 
 ### Health Check
@@ -162,6 +183,9 @@ uvicorn app.main:app --reload
 
 Planned improvements for this project:
 
+- Add user authentication (JWT-based login/register).
 - Restrict tasks so that each user can only access their own tasks.
+- Implement login and password management.
+- Improve pagination with total count and page metadata in the response.
 - Add a simple frontend (React or plain HTML/JS) for managing tasks in the browser.
 - Write more automated tests (unit and integration) for the API.
