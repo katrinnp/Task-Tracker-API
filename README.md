@@ -9,8 +9,9 @@ Task Tracker API is a REST API for managing tasks and users, built with **FastAP
 - Pydantic
 - SQLite
 - Uvicorn
-- Python-JOSE (JWT)
+- JWT
 - Passlib (bcrypt password hashing)
+- Docker
 
 ## Project structure (backend `app` folder)
 
@@ -69,12 +70,11 @@ Creates a new user.
 
 Example request body:
 
-```json
+json
 {
   "username": "testuser",
   "password": "password123"
 }
-```
 
 ## Login
 
@@ -82,12 +82,12 @@ Returns a JWT access token.
 
 Example response:
 
-```json
+json
 {
   "access_token": "jwt_token_here",
   "token_type": "bearer"
 }
-```
+
 
 ## Using the Access Token
 
@@ -96,7 +96,6 @@ Example response:
 3. Click the **Authorize** button.
 4. Enter: Bearer <access_token>
 5. Access protected endpoints.
-
 
 ---
 
@@ -112,16 +111,15 @@ Example response:
 
 ## Users Endpoints
 
-| Method | Path        | Description           |
-|--------|------------|----------------------|
-| GET    | `/users/`  | List all users.      |
-| POST   | `/users/`  | Create a new user.   |
-
+| Method | Path                  | Description                          |
+|--------|-----------------------|--------------------------------------|
+| GET    | `/users/`             | List all users.                     |
+| GET    | `/users/{user_id}`    | Get a single user by ID.            |
+| POST   | `/users/`             | Create a new user.                  |
+| PATCH  | `/users/{user_id}`    | Partially update an existing user.  |
+| DELETE | `/users/{user_id}`    | Delete a user (returns HTTP 204).   |
 
 ## Tasks Endpoints
-
-The following endpoints are available under the `/tasks` prefix:
-
 
 | Method | Path              | Description                                  |
 |--------|------------------|----------------------------------------------|
@@ -141,27 +139,50 @@ The following endpoints are available under the `/tasks` prefix:
 
 ## Running locally
 
-1. Create and activate a virtual environment (optional but recommended).
+1. Create and activate a virtual environment.
 
 2. Install dependencies:
 
 pip install -r requirements.txt
 
-
 3. Run the development server:
 
 uvicorn app.main:app --reload
-
 
 4. Open:
 
 - Swagger UI: http://localhost:8000/docs  
 - Root health check: http://localhost:8000/
 
+## Running with Docker
+
+This project includes a Dockerfile that allows the API to run inside a container without installing Python or dependencies locally.
+
+### Requirements
+
+- Docker installed and running  
+
+### Build the Docker image
+
+From the project root directory:
+
+docker build -t task-tracker-api .
+
+### Run the container
+
+docker run -p 8000:8000 task-tracker-api
+
+After the container starts, open:
+
+- Swagger UI: http://localhost:8000/docs  
+- Root health check: http://localhost:8000/  
+
+---
+
 ## Future work
 
 Planned improvements for this project:
 
-- Restrict tasks so that each user can only access their own tasks.
-- Add a simple frontend (React or plain HTML/JS) for managing tasks in the browser.
-- Write more automated tests (unit and integration) for the API.
+- Add a simple frontend (React or plain HTML/JS) for managing tasks in the browser.  
+- Write more automated tests (unit and integration) for the API.  
+
