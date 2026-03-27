@@ -1,9 +1,9 @@
 from fastapi import HTTPException # Tools for routing and dependency
 from sqlalchemy.orm import Session # Session for db
 
-from app.core.security import hash_password # Import password hashing
+from app.core.security import hash_password, verify_password # Import password hashing
 from app.models.user import User # User table in db
-from app.schemas.schemas import UserCreate, UserUpdate # Pydantic schemas for validation
+from app.schemas.schemas import UserCreate, UserUpdate, LoginRequest # Pydantic schemas for validation
 
 def create_user(db: Session,
                 user: UserCreate): # Creates new db session per request, closes automatically in the end
@@ -58,4 +58,10 @@ def delete_user(db: Session, user_id: int): # Delete user by id
 
     return None
 
-    
+def login_user(db: Session, data: LoginRequest):
+    user = db.query(User).filter(User.username == data.username).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid information")
+    if not verify_password(data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid information")
+    return user
