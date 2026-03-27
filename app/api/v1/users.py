@@ -4,7 +4,7 @@ from typing import List
 
 from app.core.database import get_db # Creates a new db session per request
 from app.models.user import User # User table in db
-from app.schemas.schemas import UserCreate, UserRead, UserUpdate # Pydantic schemas for validation
+from app.schemas.schemas import UserCreate, UserRead, UserUpdate, LoginRequest # Pydantic schemas for validation
 from app.services import user_service
 
 router = APIRouter() # Used to group and organise user-related endpoints in FastAPI
@@ -33,3 +33,7 @@ def update_user(user_id: int,
 def delete_user(user_id: int,
                 db: Session = Depends(get_db)): # Delete a user by id
     return user_service.delete_user(db, user_id)
+
+@router.post("/login")
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    return user_service.login_user(db, data)
