@@ -1,7 +1,8 @@
 from pydantic import BaseModel #Base class for data validation
-from typing import Optional #For optional types in Python 3.9
+from typing import Optional, List #For optional types in Python 3.9
 from datetime import datetime #For timestamp fields
 from pydantic import EmailStr # Provides automatic email format validation
+
 
 #Defines how a task is returned to the client
 class TaskRead(BaseModel): #Reading a task
@@ -38,6 +39,8 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: int
     username: str
+    role: str # User role
+    groups: List[int] = [] # IDs of groups the user belongs to
 
     class Config:
         from_attributes = True # Allows reading from SQLAlchemy models
@@ -54,3 +57,16 @@ class Token(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+class GroupBase(BaseModel): # Base schema for Group
+    name: str # Name of the group
+
+class GroupCreate(GroupBase): # Used whem creating a group
+    admin_id: int # ID of group admin
+
+class GroupRead(GroupBase): # Used for returning group data
+    id: int 
+    admin_id: int 
+    
+    class Config:
+        from_attributes = True # Allows reading from ORM models
