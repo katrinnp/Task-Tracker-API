@@ -17,12 +17,12 @@ class Membership(Base):
                       nullable = False
     )
     role = Column(String, # Role of the user in a specific group
-                  default = "Member",
+                  default = "member",
                   nullable = False
     )
-    user = relationship("User", # Relationship to the user
+    user = relationship("user", # Relationship to the user
                         back_populates="memberships"
     )
-    group = relationship("Group", # Relationship to the group
+    group = relationship("group", # Relationship to the group
                          back_populates="memberships"
     )
