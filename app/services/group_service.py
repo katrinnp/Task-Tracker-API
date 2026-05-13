@@ -23,7 +23,7 @@ def create_group(db: Session,
     # Create membership for the creator as a group admin
     membership = Membership(user_id = creator_id,
                             group_id = new_group.id,
-                            role = "GROUP ADMIN"
+                            role = "group_admin"
     )
 
     db.add(membership)
@@ -35,7 +35,7 @@ def create_group(db: Session,
 def add_user_to_group(db: Session,
                       group_id: int,
                       user_id: int,
-                      role: str = "MEMBER"):
+                      role: str = "member"):
     # Check if the user exists
     user = db.query(User).filter(User.id == user_id).first()
     if not user:

@@ -22,7 +22,7 @@ class User(Base):
     # Role for the user
     role = Column(
         String,
-        default="User",
+        default="user",
         nullable = False
     )
     # One to many: a user can have many tasks
