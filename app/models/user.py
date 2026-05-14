@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship #Used to define ORM relationships between models
 from app.core.database import Base #For model to become a database table
+from app.models.group import user_group # Import association table
 
 class User(Base):
     __tablename__ = "users"
