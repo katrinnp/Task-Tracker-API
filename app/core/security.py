@@ -1,5 +1,5 @@
 from passlib.context import CryptContext # Used for password hashing
-from jose import jwt # Used for JWT token creation
+from jose import jwt, JWTError # Used for JWT token creation and catch decoding errors
 from datetime import datetime, timedelta # Used for token expiration
 
 from app.core.config import settings # Import project settings from .env
@@ -23,5 +23,14 @@ def create_access_token(data: dict) -> str: # Creates JWT token with expiration 
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm = settings.algorithm) # Create and sign the JWT token with secret key
     return encoded_jwt
 
-
+def decode_access_token(token: str) -> dict: # Decodes JWT token and returns payload
+    try:
+        payload = jwt.decode(
+            token,
+            settings.secret_key,
+            algorithms=[settings.algorithm]
+        )
+        return payload
+    except JWTError: # Raises an exception if the token is invalid or expired
+        return None
 

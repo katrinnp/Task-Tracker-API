@@ -8,6 +8,8 @@ from app.core.dependencies import get_current_user
 from app.models.user import User
 from fastapi import APIRouter #Routing
 
+from app.core.dependencies import get_current_user
+
 from app.services import task_service
 
 router = APIRouter() #Used to group and organise task-related endpoints in FastAPI

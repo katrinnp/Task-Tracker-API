@@ -40,7 +40,6 @@ class UserRead(BaseModel):
     id: int
     username: str
     role: str # User role
-    groups: List[int] = [] # IDs of groups the user belongs to
 
     class Config:
         from_attributes = True # Allows reading from SQLAlchemy models
@@ -58,15 +57,27 @@ class LoginRequest(BaseModel):
     username: str
     password: str
 
+class MembershipCreate(BaseModel):
+    user_id: int
+    role: str = "Member"
+
+class MembershipRead(BaseModel):
+    user_id: int
+    group_id: int
+    role: str
+
+    class Config:
+        from_attributes = True
+
 class GroupBase(BaseModel): # Base schema for Group
     name: str # Name of the group
 
-class GroupCreate(GroupBase): # Used whem creating a group
-    admin_id: int # ID of group admin
+class GroupCreate(GroupBase): # Used when creating a group
+    pass
 
 class GroupRead(GroupBase): # Used for returning group data
     id: int 
-    admin_id: int 
+    memberships: List[MembershipRead] = []
     
     class Config:
         from_attributes = True # Allows reading from ORM models

@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session # SQLAlchemy database session
 from app.core.config import settings # SECRET_KEY, algorithm
 from app.core.database import get_db # DB session dependency
 from app.models.user import User # User ORM model
+from app.models.membership import Membership
+from app.core.permissions import is_admin, is_group_admin
 
 # Reads "Authorization: Bearer <token>"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "/auth/login")
@@ -35,4 +37,20 @@ def get_current_user(token: str = Depends(oauth2_scheme), # Extract token from r
     
     return user
     
-    
+# Allows access only to admins
+def require_admin(current_user: User = Depends(get_current_user)):
+    if not is_admin(current_user):
+        raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, 
+                            detail = "Admin privileges required")
+    return current_user
+
+# Checks whether current user is a group admin for a specific group
+def require_group_admin(group_id: int,
+                        current_user: User,
+                        db: Session):
+    if is_admin(current_user):
+        return current_user
+    if not is_group_admin(db, current_user, group_id):
+        raise HTTPException(status_code = status.HTTP_403_FORBIDDEN,
+                           detail = "Group admin privileges required")
+    return current_user

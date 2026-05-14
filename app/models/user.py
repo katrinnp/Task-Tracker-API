@@ -23,20 +23,15 @@ class User(Base):
     # Role for the user
     role = Column(
         String,
-        default="USER"
+        default="user",
+        nullable = False
     )
     # One to many: a user can have many tasks
     tasks = relationship(
         "Task", #Related model
         back_populates = "owner") #Connects this relationship to the "owner", creating a two-way link
-    # Many to many
-    groups = relationship(
-        "Group",
-        secondary=user_group,
-        back_populates="users"
-    )
-    # One to many: groups where this user is the admin
-    admin_groups = relationship(
-        "Group",
-        back_populates="admin" #Connects this relationship to the "admin", creating a two-way link
+    # One user can belong to many groups through memberships
+    memberships = relationship("Membership",
+                               back_populates = "user",
+                               cascade = "all, delete-orphan" # If delete user, delete memberships
     )
