@@ -20,9 +20,9 @@ class Membership(Base):
                   default = "member",
                   nullable = False
     )
-    user = relationship("user", # Relationship to the user
+    user = relationship("User", # Relationship to the user
                         back_populates="memberships"
     )
-    group = relationship("group", # Relationship to the group
+    group = relationship("Group", # Relationship to the group
                          back_populates="memberships"
     )
